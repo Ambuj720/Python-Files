@@ -3,7 +3,7 @@ import pickle
 import cvzone
 import numpy as np
  
-cap = cv2.VideoCapture('carPark.mp4')   # video name
+cap = cv2.VideoCapture('carPark.mp4')   # video name 
 
 
 width, height = 103, 43     #  Acc. to parking cam height
@@ -80,5 +80,5 @@ while True:
     # cv2.imshow("ImageGray", imgThres)
     # cv2.imshow("ImageBlur", imgBlur)
     key = cv2.waitKey(1)
-    if key == ord('q'):
-        pass
+    if key == 27:
+        break
