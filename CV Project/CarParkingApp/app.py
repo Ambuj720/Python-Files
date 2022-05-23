@@ -1,7 +1,11 @@
-from db import ParkingSpace
+
+from psutil import users
+from requests import Session
+from db import ParkingSpace,User
 from sqlalchemy.engine import create_engine
 from sqlalchemy.orm import sessionmaker
-from flask import Flask, render_template, request, flash, redirect
+from flask import Flask, render_template, request, flash, redirect,session
+
 
 app = Flask(__name__)
 
@@ -23,6 +27,47 @@ def about():
 @app.route('/uploadImg')
 def contact_us():
     return render_template('uploadImg.html')
+
+@app.route('/login',methods=['POST','GET'])
+def login():
+    if request.method == "POST":
+        username = request.form.get('u')
+        password = request.form.get('p')
+        if username and password:
+            opendb()
+            result = session.query(User).filter(User.username==username)
+            if result and result.password == password:
+                session['is_auth'] = True
+                session['id'] = result.id
+                session['username'] = result.username
+                flash('You are logged in!','success')
+                return redirect('/')
+            else:
+                flash('invalid credentials','danger')
+        else:
+            flash('invalid form data','danger')    
+    return render_template('login.html')
+
+@app.route('/register',methods=['POST','GET'])
+def register():
+    if request.method == "POST":
+        username = request.form.get('username')
+        password = request.form.get('password')
+        cpassword = request.form.get('confirmpassword')
+        if password != cpassword:
+            flash('Password does not match','danger')
+            return redirect('/register')
+        else:
+            opendb()
+            username = User(username=username)
+            password = User(password=password)
+            Session.add(User)
+            Session.commit()
+            Session.close()
+            flash('User added successfully','success')
+            return redirect('/register')
+    return render_template('register.html')
+
 
 if __name__ == '__main__':
   app.run(host='127.0.0.1', port=8000, debug=True)
