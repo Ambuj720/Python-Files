@@ -8,7 +8,7 @@ from sqlalchemy.orm import sessionmaker
 Base = declarative_base()
 
 class ParkingSpace(Base):
- __tablename__ = 'parking space'
+ __tablename__ = 'Parking_space'
  id = Column(Integer,primary_key=True)
  parking_area = Column(String,unique = True) 
  free_space= Column(Integer , default = 0)
@@ -21,5 +21,5 @@ def __str__(self):
         return self.title
 
  
-engine = create_engine("sqlite:///carpark.sqlite",echo = True)
+engine = create_engine("sqlite:///Carpark.sqlite",echo = True)
 Base.metadata.create_all(engine)
