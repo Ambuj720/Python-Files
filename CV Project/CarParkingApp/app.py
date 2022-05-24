@@ -33,11 +33,11 @@ def login():
     if request.method == "POST":
         username = request.form.get('username')
         password = request.form.get('password')
-        print(username,password)
+        #print(username,password)
         if username and password:
             db= opendb()
-            result = db.query(User).filter(User.username==username)
-            if result and result.password == password:
+            result = db.query(User).filter_by(username=username,password=password).first()
+            if result:
                 session['is_auth'] = True
                 session['id'] = result.id
                 session['username'] = result.username
