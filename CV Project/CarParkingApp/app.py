@@ -31,11 +31,12 @@ def contact_us():
 @app.route('/login',methods=['POST','GET'])
 def login():
     if request.method == "POST":
-        username = request.form.get('u')
-        password = request.form.get('p')
+        username = request.form.get('username')
+        password = request.form.get('password')
+        print(username,password)
         if username and password:
-            opendb()
-            result = session.query(User).filter(User.username==username)
+            db= opendb()
+            result = db.query(User).filter(User.username==username)
             if result and result.password == password:
                 session['is_auth'] = True
                 session['id'] = result.id
@@ -58,12 +59,11 @@ def register():
             flash('Password does not match','danger')
             return redirect('/register')
         else:
-            opendb()
-            username = User(username=username)
-            password = User(password=password)
-            Session.add(User)
-            Session.commit()
-            Session.close()
+            db = opendb()
+            user = User(username=username,password=password)
+            db.add(user)
+            db.commit()
+            db.close()
             flash('User added successfully','success')
             return redirect('/register')
     return render_template('register.html')
